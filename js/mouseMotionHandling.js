@@ -81,7 +81,7 @@ function rotateModelViewMatrixUsingQuaternion(stop) {
 	rotationMatrix = mat4.create();
 	mat4.identity(rotationMatrix);
 	mat4.fromQuat(rotationMatrix, myQuaternion);
-	mat4.multiply(mvMatrix, rotationMatrix, mvMatrix);
+	mat4.multiply(mvMatrix, mvMatrix,rotationMatrix);
 	//reset rotation values, otherwise rotation accumulates
 	if(stop){
 		rotX = 0.;

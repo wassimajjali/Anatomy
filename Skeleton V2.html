@@ -212,13 +212,6 @@
 			    glContextOsVisualization.depthFunc(glContextOsVisualization.LEQUAL);                                // Les objets proches cachent les objets lointains
 			    glContextOsVisualization.clear(glContextOsVisualization.COLOR_BUFFER_BIT|glContextOsVisualization.DEPTH_BUFFER_BIT);      // Efface les couleurs et le buffer de profondeur.
 				}
-				//glContextOsVisualization.clear(glContextOsVisualization.DEPTH_BUFFER_BIT | glContextOsVisualization.COLOR_BUFFER_BIT | glContextOsVisualization.STENCIL_BUFFER_BIT);
-				/*glContextOsVisualization.clear(glContextOsVisualization.DEPTH_BUFFER_BIT | glContextOsVisualization.COLOR_BUFFER_BIT);
-				glContextOsVisualization.clearColor(0.0, 0.0, 0.0, 1.0)*/
-				//glContextOsVisualization.clear(glContextOsVisualization.COLOR_BUFFER_BIT)
-				/*glContextOsVisualization.clearColor(1.0, 1.0, 1.0, 1.0); 
-				glContextOsVisualization.enable(glContextOsVisualization.DEPTH_TEST);
-				glContextOsVisualization.clear(glContextOsVisualization.COLOR_BUFFER_BIT | glContextOsVisualization.DEPTH_BUFFER_BIT);	*/
 			}
 			
 			function fillTriangle(v,color)
@@ -668,6 +661,7 @@
 			function processClickAt(pX,pY)
 			{
 				pixelColor = getPixelColorAtPoint(pX,pY);
+				//glContextOsVisualization.getExtension('osCanvas').loseContext();
 				
 				if (canvas2dBackColor[0] == pixelColor[0] && 
 					canvas2dBackColor[1] == pixelColor[1] &&
@@ -676,39 +670,23 @@
 						deselectAll();
 						return;
 				}
-				
+				//glContextOsVisualization.deleteRenderbuffer();
 				for (var i = 0; i < objectsInScene.length; i++)
 				{
-					
-
 					obj = objectsInScene[i];
 					
 					if (obj.colorId[0] == pixelColor[0] && 
 						obj.colorId[1] == pixelColor[1] &&
 						obj.colorId[2] == pixelColor[2])
 					{
-							boxSelectionOs.value = obj.typeOs;
-							divInformationOs.innerHTML = tabDescription[obj.typeOs];
-							obj.selected = true;
-							test = true;
-						///////////////////////////////////////////////////////
-						///////////////////////////////////////////////////////
-						///////////////////////////////////////////////////////
-						///////////////////////////////////////////////////////
-						///////////////////////////////////////////////////////
-						//***RENDRE ICI SUR sideContext L'OS SELECTIONNE ***//
-						///////////////////////////////////////////////////////
-						///////////////////////////////////////////////////////
-						///////////////////////////////////////////////////////
-						///////////////////////////////////////////////////////
-						///////////////////////////////////////////////////////
-
+						boxSelectionOs.value = obj.typeOs;
+						divInformationOs.innerHTML = tabDescription[obj.typeOs];
+				  		obj.selected = true;
+						test = true;
 						obj.init();
 						obj.loadSingleOsModel();
 						obj.renderOsVisualization();
 						console.log("Nom os: "+obj.typeOs);
-
-
 					}
 					else
 					{
@@ -806,7 +784,6 @@
 					o.gMVmatrix = mvMtrx;
 					o.gPmatrix = projectionMatrix;
 					o.render();
-					//o.renderOsVisualization();
 					o.transformBoundingBox();
 				}	
 				renderBoundingBoxes();			
@@ -814,23 +791,22 @@
 
 			function drawObjectsOs(projectionMatrix,modelViewMatrix)
 			{
+				//clear2dCanvasOs();
 				console.log("DrawObjectOS");
 
-				//if( test )
-					//clear2dCanvasOs();
-				
 				for (i = 0; i < objectsInScene.length; i++)
 				{
-					o = objectsInScene[i];
 					
-							console.log( "obj is not null");
-							mvMtrx = mat4.clone(modelViewMatrix);
+					o = objectsInScene[i];	
+					//rendre l'os selectionné
+					if(o.selected==true){	
+					console.log( "obj is not null");
+					mvMtrx = mat4.clone(modelViewMatrix);
 					o.gMVmatrix = mvMtrx;
 					o.gPmatrix = projectionMatrix;
-					//o.render();
 					o.renderOsVisualization();
 					o.transformBoundingBox();
-							
+					}		
 				}	
 				renderBoundingBoxes();			
 			}
@@ -849,11 +825,12 @@
 				translationMat = mat4.create();
 				mat4.identity(translationMat);
 				mat4.translate(translationMat, translationMat, [tx, ty, tz]);
-				rotateModelViewMatrixUsingQuaternion();
+				//rotateModelViewMatrixUsingQuaternion();
+				var rotMat=mat4.create();
 				
-			    //mat4.rotate(mvMatrix, mvMatrix, degToRad(rotY), [0, 1, 0]);
-			    //mat4.rotate(mvMatrix, mvMatrix, degToRad(rotX), [1, 0, 0]);
-
+			    mat4.rotate(rotMat, mvMatrix, degToRad(rotY), [0, 1, 0]);
+			    mat4.rotate(rotMat, mvMatrix, degToRad(rotX), [1, 0, 0]);
+				mat4.multiply(mvMatrix,mvMatrix, rotMat);
 				modelViewMatrix = mat4.create();
 				mat4.multiply(modelViewMatrix, translationMat, mvMatrix);
 
@@ -861,24 +838,6 @@
 
 				drawSceneOsVisualization();
 			}
-
-			/*function drawScene(){
-				glContext.clearColor(0.9, 0.9, 1.0, 1.0);
-				glContext.enable(glContext.DEPTH_TEST);
-				glContext.clear(glContext.COLOR_BUFFER_BIT | glContext.DEPTH_BUFFER_BIT);
-				glContext.viewport(0, 0, c_width, c_height);
-				mat4.perspective(pMatrix, degToRad(60), c_width / c_height, 0.1, 1000.0);
-				translationMat = mat4.create();
-				mat4.identity(translationMat);
-				mat4.translate(translationMat,translationMat, [tx, ty, tz]);
-				rotateModelViewMatrixUsingQuaternion(true);
-			    glContext.uniformMatrix4fv(prg.pMatrixUniform, false, pMatrix);
-			    glContext.uniformMatrix4fv(prg.mvMatrixUniform, false, mat4.multiply(mat4.create(), translationMat, mvMatrix));
-
-			    modelViewMatrix = mat4.create();
-				mat4.multiply(modelViewMatrix, translationMat, mvMatrix);
-				drawObjects(pMatrix, mvMatrix);	
-			}*/
 
 			function drawSceneOsVisualization()
 			{
