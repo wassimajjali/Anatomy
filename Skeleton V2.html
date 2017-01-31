@@ -135,6 +135,8 @@
 					case 65:
 						rotY--;
 						break;
+					//case 68: turnR();break;
+					//case 65: turnL();break;
 					case 82:
 						ty++;
 						break;
@@ -146,12 +148,6 @@
 				}
 			}
 			
-			/**
-			*
-			*	Create Canvas 2D
-			*
-			**/
-			
 			// Variables pour le canvas 2D
 			var canvas2D;
 			var ctx2d;
@@ -159,7 +155,37 @@
 			var canvas2dHalfHeight;
 			var sortedTriangles;
 			var canvas2dBackColor = [240,240,240];	// Couleur du canvas 2D
-			
+			function turnL(){
+				for (var i = 0; i < objectsInScene.length; i++) {
+						objectsInScene[i].rotateObjOnYAxis(-10);
+					}
+				}
+
+
+			function turnR(){
+				for (var i = 0; i < objectsInScene.length; i++) {
+						objectsInScene[i].rotateObjOnYAxis(10);
+					}
+			}
+
+			function  rotateObjOnXAxis(degre){
+		     var rotXQuat = quat.create();
+		     quat.setAxisAngle(rotXQuat, [1, 0, 0], degToRad(degre));
+		     var rotationMatrix = mat4.create();
+		     mat4.identity(rotationMatrix);
+		     mat4.fromQuat(rotationMatrix, rotXQuat);
+		     mat4.multiply(this.mvMatrix, rotationMatrix, this.mvMatrix);
+		   }
+
+			function rotateObjOnYAxis(degre){
+			    var rotYQuat = quat.create();
+			    quat.setAxisAngle(rotYQuat, [0, 1, 0], degToRad(degre));
+			    var rotationMatrix = mat4.create();
+			    mat4.identity(rotationMatrix);
+			    mat4.fromQuat(rotationMatrix, rotYQuat);
+			    mat4.multiply(this.mvMatrix, rotationMatrix,this.mvMatrix);
+			  }
+
 			// Création du canvas2D et ajout en HTML
 			function setup2dCanvas()
 			{
@@ -821,11 +847,11 @@
 				
 			    glContext.uniformMatrix4fv(prg.pMatrixUniform, false, pMatrix);
 				
-				//mat4.identity(mvMatrix);
+				mat4.identity(mvMatrix);
 				translationMat = mat4.create();
 				mat4.identity(translationMat);
 				mat4.translate(translationMat, translationMat, [tx, ty, tz]);
-				//rotateModelViewMatrixUsingQuaternion();
+				rotateModelViewMatrixUsingQuaternion();
 				var rotMat=mat4.create();
 				
 			    mat4.rotate(rotMat, mvMatrix, degToRad(rotY), [0, 1, 0]);
