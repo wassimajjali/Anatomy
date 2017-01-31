@@ -1,0 +1,60 @@
+@font-face {
+    font-family: bonesFont;
+    src: url(../font/arthriti.TTF);
+}
+body
+{
+	margin:auto;
+	background-color:#A0A8A0;
+}
+
+header
+{
+	background-color: #A0A8A0;
+	color: black;
+	height: 120px;
+}
+
+footer
+{
+	font-family: bonesFont;
+	background-color: #A0A8A0;
+	color: black;
+	height: 70px;
+	text-align: center;
+	clear: both;
+    position: relative;
+    z-index: 10;
+    height: 3em;
+    margin-top: -3em;
+}
+
+h1
+{
+	font-family: bonesFont;
+	text-align: center;
+	padding: 40px 10px 40px 10px;
+	font-size: 100px;
+}
+
+#informationOs
+{
+	padding : 10px;
+	text-align: center;
+	font-size: 30px;
+	min-height: 40px;
+	background-color: #C0C0C0;
+}
+
+#content
+{
+	text-align:center;
+	padding: 10px 90px 10px 90px;
+}
+
+.title2
+{
+	font-size: 30px;
+	padding: 10px;
+}
+
